@@ -8,13 +8,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 public class GPLJFXApplication extends Application {
 
-    @Autowired
-    CreateGui createGui;
-
     @Override
     public void start(Stage stage) {
-        createGui.setStage(stage);
-        createGui.init();
+        CreateGui createGui = new CreateGui(stage, "GPLA");
         createGui.show();
     }
 }
