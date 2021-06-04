@@ -11,28 +11,36 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FileWriter;
 import java.util.Optional;
+import java.util.Scanner;
 
 public class MenuOptions {
 
-    public void createNew() {
-
+    public void createNew(Stage stage, TextArea input) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Create new");
+        confirm.setHeaderText("Save?");
+        confirm.setContentText("Do you want to save before creating a new project?");
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+            save(stage, input);
+        }
+        if (!(result.isPresent() && result.get().equals(ButtonType.CANCEL))) {
+            input.clear();
+        }
     }
 
     public void save(Stage stage, TextArea input) {
         FileChooser saveFile = new FileChooser();
         saveFile.setTitle("Save File");
-        saveFile.setInitialFileName("image.png");
+        saveFile.setInitialFileName("newProject.txt");
         saveFile.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("TXT", "*.txt"));
+                new FileChooser.ExtensionFilter("txt", "*.txt"));
         File file = saveFile.showSaveDialog(stage);
-
         if (file != null) {
-            try {
-
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                fileWriter.write(input.getText());
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to save file");
                 alert.showAndWait();
@@ -40,23 +48,30 @@ public class MenuOptions {
         }
     }
 
-    public void load(Stage stage) {
+    public void load(Stage stage, TextArea input) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Load new Project");
         confirm.setContentText("Are you sure you want to load a different project?\nMake sure you have saved!");
         Optional<ButtonType> result = confirm.showAndWait();
 
-        if (result.get().equals(ButtonType.OK)) {
+        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
             FileChooser openFile = new FileChooser();
             openFile.setTitle("Open File");
             openFile.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("All Files", "*.*"),
-                    new FileChooser.ExtensionFilter("TXT", "*.txt"));
+                    new FileChooser.ExtensionFilter("txt", "*.txt"));
             File file = openFile.showOpenDialog(stage);
 
             if (file != null) {
-                try {
+                StringBuilder stringBuilder = new StringBuilder();
+                //TODO get spaces from file as well
+                try (Scanner scanner = new Scanner(file)) {
+                    while (scanner.hasNext()) {
+                        stringBuilder.append(scanner.next());
+                        stringBuilder.append("\n");
+                    }
+                    input.setText(stringBuilder.toString());
                 } catch (Exception e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to load file");
                     alert.showAndWait();
@@ -83,14 +98,22 @@ public class MenuOptions {
         helpStage.showAndWait();
     }
 
-    public void exit() {
+    public void exit(Stage stage, TextArea input) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Exit");
-        confirm.setContentText("Are you sure you want to exit?\nMake sure you have saved!");
+        confirm.setContentText("Do you want to save before exiting?");
         Optional<ButtonType> result = confirm.showAndWait();
-        if (result.get().equals(ButtonType.OK)) {
+        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+            save(stage, input);
+        }
+        if (!(result.isPresent() && result.get().equals(ButtonType.CANCEL))) {
             Platform.exit();
         }
+    }
+
+    //TODO use this
+    private boolean checkEmptyInput(TextArea input) {
+        return input.getText().equals("");
     }
 }

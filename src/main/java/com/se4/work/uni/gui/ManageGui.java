@@ -7,22 +7,23 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class CreateGui {
+public class ManageGui {
 
-    private Stage stage;
+    protected Stage stage;
     private Scene mainScene;
-    private VBox mainVBox;
-    private SplitPane mainSplitPane = new SplitPane();
+    private final SplitPane mainSplitPane = new SplitPane();
 
     private HBox menuHBox;
 
-    private TextArea input = new TextArea();
-    private Button run = new Button("Run");
-    private VBox inputVBox = new VBox(input, run);
+    protected final TextArea input = new TextArea();
+    private final Button run = new Button("Run");
+    private final VBox inputVBox = new VBox(input, run);
 
-    private VBox outputVBox = new VBox();
+    private final VBox outputVBox = new VBox();
 
-    public CreateGui(Stage stage, String title) {
+    public ManageGui() {}
+
+    public ManageGui(Stage stage, String title) {
         this.stage = stage;
         configureStage(title);
         configureMenu();
@@ -46,19 +47,19 @@ public class CreateGui {
         MenuOptions options = new MenuOptions();
 
         MenuItem createNew = new MenuItem("New");
-        createNew.setOnAction(e -> options.createNew());
+        createNew.setOnAction(e -> options.createNew(stage, input));
 
         MenuItem save = new MenuItem("Save");
         save.setOnAction(e -> options.save(stage, input));
 
         MenuItem load = new MenuItem("Load");
-        load.setOnAction(e -> options.load(stage));
+        load.setOnAction(e -> options.load(stage, input));
 
         MenuItem help = new MenuItem("Help");
         help.setOnAction(e -> options.help());
 
         MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(e -> options.exit());
+        exit.setOnAction(e -> options.exit(stage, input));
 
         menu.getItems().addAll(createNew, save, load, help,  exit);
         menuBar.getMenus().addAll(menu);
@@ -72,7 +73,7 @@ public class CreateGui {
 
     private void configureScene() {
         mainSplitPane.getItems().addAll(inputVBox, outputVBox);
-        mainVBox = new VBox(menuHBox, mainSplitPane);
+        VBox mainVBox = new VBox(menuHBox, mainSplitPane);
         mainScene = new Scene(mainVBox);
     }
 }
