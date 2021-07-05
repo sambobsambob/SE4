@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 public class MenuOptions {
 
-    public void createNew(Stage stage, TextArea input) {
+    public void createNew(TextArea input) {
         if (checkEmptyInput(input)) {
             input.clear();
         } else {
@@ -99,7 +99,7 @@ public class MenuOptions {
         helpStage.showAndWait();
     }
 
-    public void exit(Stage stage, TextArea input) {
+    public void exit(TextArea input) {
         if (checkEmptyInput(input)) {
             Platform.exit();
         } else {
@@ -114,7 +114,6 @@ public class MenuOptions {
         }
     }
 
-    //TODO use this
     private boolean checkEmptyInput(TextArea input) {
         return input.getText().equals("");
     }
