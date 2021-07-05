@@ -15,9 +15,10 @@ public class ManageGui {
 
     private HBox menuHBox;
 
-    protected final TextArea input = new TextArea();
+    private final TextArea input = new TextArea();
+    private final TextField cmd = new TextField();
     private final Button run = new Button("Run");
-    private final VBox inputVBox = new VBox(input, run);
+    private final VBox inputVBox = new VBox(input, cmd, run);
 
     private final VBox outputVBox = new VBox();
 

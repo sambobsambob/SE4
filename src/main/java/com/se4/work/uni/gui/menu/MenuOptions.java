@@ -18,16 +18,17 @@ import java.util.Scanner;
 public class MenuOptions {
 
     public void createNew(Stage stage, TextArea input) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Create new");
-        confirm.setHeaderText("Save?");
-        confirm.setContentText("Do you want to save before creating a new project?");
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
-            save(stage, input);
-        }
-        if (!(result.isPresent() && result.get().equals(ButtonType.CANCEL))) {
+        if (checkEmptyInput(input)) {
             input.clear();
+        } else {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Create new");
+            confirm.setHeaderText("Create new project?");
+            confirm.setContentText("Make sure to save before creating a new project");
+            Optional<ButtonType> result = confirm.showAndWait();
+            if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+                input.clear();
+            }
         }
     }
 
@@ -99,16 +100,17 @@ public class MenuOptions {
     }
 
     public void exit(Stage stage, TextArea input) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Exit");
-        confirm.setContentText("Do you want to save before exiting?");
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
-            save(stage, input);
-        }
-        if (!(result.isPresent() && result.get().equals(ButtonType.CANCEL))) {
+        if (checkEmptyInput(input)) {
             Platform.exit();
+        } else {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Confirmation");
+            confirm.setHeaderText("Exit");
+            confirm.setContentText("Make sure you have saved before exiting?");
+            Optional<ButtonType> result = confirm.showAndWait();
+            if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+                Platform.exit();
+            }
         }
     }
 
