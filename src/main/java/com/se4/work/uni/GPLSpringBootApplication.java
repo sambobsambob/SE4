@@ -9,6 +9,11 @@ package com.se4.work.uni;
 import javafx.application.Application;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Main class that launches the spring boot application
+ *
+ * @author samuel.canham
+ */
 @SpringBootApplication
 public class GPLSpringBootApplication {
 

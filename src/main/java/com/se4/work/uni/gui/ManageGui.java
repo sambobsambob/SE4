@@ -91,6 +91,6 @@ public class ManageGui {
 
     private void configureRun() {
         runCode.setOnAction(e -> RunCode.runCode(input, graphicsContext));
-        runCmd.setOnAction(e -> RunCode.runCmd(cmd));
+        runCmd.setOnAction(e -> RunCode.runCmd(cmd, graphicsContext));
     }
 }

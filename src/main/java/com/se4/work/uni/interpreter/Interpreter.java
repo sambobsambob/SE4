@@ -1,13 +1,32 @@
 package com.se4.work.uni.interpreter;
 
+import com.se4.work.uni.exception.IncorrectNumberOfParametersException;
 import com.se4.work.uni.exception.InvalidSyntaxException;
 import com.se4.work.uni.exception.NoCodeException;
 import com.se4.work.uni.exception.UnknownCommandException;
 
+import java.util.*;
+
+/**
+ * Handles the running of the code and commands
+ *
+ * @author samuel.canham
+ */
 public class Interpreter {
 
     SyntaxCheck syntaxCheck = new SyntaxCheck();
 
+    double x = 0;
+    double y = 0;
+    Map<String, String> vars = new HashMap<>();
+
+    /**
+     * Retrieves the commands from the code entered
+     * @param code The code entered by the user
+     * @return The commands entered by the user
+     * @throws NoCodeException if no code has been entered by the user
+     * @throws InvalidSyntaxException If there is an invalid syntax in the users code
+     */
     public String[] getCommands(String code) throws NoCodeException, InvalidSyntaxException {
         if (code.isEmpty()) {
             throw new NoCodeException("No code entered");
@@ -17,74 +36,120 @@ public class Interpreter {
         return codeLines;
     }
 
-    //TODO create custom exceptions for not enough parameters when creating the shapes
-    public void runCommands(String[] cmds) throws UnknownCommandException {
+    /**
+     * Runs the commands entered by the user
+     * @param cmds the command
+     * @param code the code
+     */
+    public void runCommands(String[] cmds, String code) {
         int line = 0;
         for (String cmd : cmds) {
+            cmd = cmd.split(" ")[0];
             switch (cmd) {
                 case ("moveto"):
-                    moveTo(cmd);
+                    moveTo(code, line);
                     break;
                 case ("while"):
-                    whileCmd(cmd);
+                    whileCmd(code, line);
                     break;
                 case ("if"):
-                    ifCmd(cmd);
+                    ifCmd(code, line);
                     break;
                 case ("endif"):
-                    endif(cmd);
+                    endif(code);
                     break;
                 case ("endwhile"):
-                    endwhile(cmd);
+                    endwhile(code);
                     break;
                 case ("square"):
-                    squareOrRectangle(cmd);
+                    squareOrRectangle(code);
                     break;
                 case ("triangle"):
-                    triangle(cmd);
+                    triangle(code);
                     break;
                 case ("circle"):
-                    circle(cmd);
+                    circle(code);
                     break;
                 default:
-                    throw new UnknownCommandException("Unknown command on line " + line);
+                    var(code, line);
+                    break;
             }
         }
     }
 
-    private String formatCmdLine(String cmdLine) {
-        return cmdLine.replace(" ", "");
+    private void var(String cmd, int line) {
+        try {
+            String varName = cmd.split(" ")[0];
+            String value = syntaxCheck.getParams(cmd, 1, line).get(0);
+            vars.put(varName, value);
+        } catch (IncorrectNumberOfParametersException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void moveTo(String cmd) {
-        cmd = formatCmdLine(cmd);
+    /**
+     *
+     * @param cmd
+     * @param line
+     */
+    private void moveTo(String cmd, int line) {
+        try {
+            List<String> coords = syntaxCheck.getParams(cmd, 2, line);
+            setOrigin(coords);
+        } catch (IncorrectNumberOfParametersException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private void whileCmd(String cmd) {
-        cmd = formatCmdLine(cmd);
+    /**
+     * Sets the origin of the shape
+     * @param coords the x and y coordinates
+     */
+    private void setOrigin(List<String> coords) {
+        try {
+            this.x = Double.parseDouble(coords.get(0));
+            this.y = Double.parseDouble(coords.get(1));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void ifCmd(String cmd) {
-        cmd = formatCmdLine(cmd);
+    private void whileCmd(String cmd, int line) {
+        String condition = "";
+        try {
+            condition = syntaxCheck.getParams(cmd, 1, line).get(0);
+        } catch (IncorrectNumberOfParametersException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void ifCmd(String cmd, int line) {
+        String condition = "";
+        try {
+            condition = syntaxCheck.getParams(cmd, 1, line).get(0);
+        } catch (IncorrectNumberOfParametersException e) {
+            e.printStackTrace();
+        }
     }
 
     private void endif(String cmd) {
-        cmd = formatCmdLine(cmd);
+        //TODO talk about how it is a beginner programming language hence anythingcan be after this and it will work
     }
 
     private void endwhile(String cmd) {
-        cmd = formatCmdLine(cmd);
+
     }
 
     private void squareOrRectangle(String cmd) {
-        cmd = formatCmdLine(cmd);
+
     }
 
     private void triangle(String cmd) {
-        cmd = formatCmdLine(cmd);
+
     }
 
     private void circle(String cmd) {
-        cmd = formatCmdLine(cmd);
+
     }
 }
