@@ -3,9 +3,16 @@ package com.se4.work.uni.interpreter;
 import com.se4.work.uni.exception.IncorrectNumberOfParametersException;
 import com.se4.work.uni.exception.InvalidSyntaxException;
 import com.se4.work.uni.exception.NoCodeException;
-import com.se4.work.uni.exception.UnknownCommandException;
+import com.se4.work.uni.exception.UnableToDrawShape;
+import com.se4.work.uni.factory.DrawCircle;
+import com.se4.work.uni.factory.Rectangle;
+import com.se4.work.uni.factory.Square;
+import com.se4.work.uni.factory.Triangle;
+import javafx.scene.canvas.GraphicsContext;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles the running of the code and commands
@@ -41,7 +48,7 @@ public class Interpreter {
      * @param cmds the command
      * @param code the code
      */
-    public void runCommands(String[] cmds, String code) {
+    public void runCommands(String[] cmds, String code, GraphicsContext gc) throws UnableToDrawShape, IncorrectNumberOfParametersException {
         int line = 0;
         for (String cmd : cmds) {
             cmd = cmd.split(" ")[0];
@@ -62,13 +69,13 @@ public class Interpreter {
                     endwhile(code);
                     break;
                 case ("square"):
-                    squareOrRectangle(code);
+                    squareOrRectangle(code, line, gc);
                     break;
                 case ("triangle"):
-                    triangle(code);
+                    triangle(code, line, gc);
                     break;
                 case ("circle"):
-                    circle(code);
+                    circle(code, line, gc);
                     break;
                 default:
                     var(code, line);
@@ -77,20 +84,26 @@ public class Interpreter {
         }
     }
 
+    /**
+     * Sets the variables entered by the user
+     * @param cmd the cmd
+     * @param line the line the cmd is on
+     */
     private void var(String cmd, int line) {
         try {
             String varName = cmd.split(" ")[0];
             String value = syntaxCheck.getParams(cmd, 1, line).get(0);
             vars.put(varName, value);
+            System.out.println("Variable set " + varName + " with the value " + value);
         } catch (IncorrectNumberOfParametersException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     *
-     * @param cmd
-     * @param line
+     * Sets the origin of the shape
+     * @param cmd the cmd
+     * @param line the line of code
      */
     private void moveTo(String cmd, int line) {
         try {
@@ -110,11 +123,17 @@ public class Interpreter {
         try {
             this.x = Double.parseDouble(coords.get(0));
             this.y = Double.parseDouble(coords.get(1));
+            System.out.println("Origin set at " + x + " " + y);
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Handles the while command
+     * @param cmd The command
+     * @param line The line the command is on
+     */
     private void whileCmd(String cmd, int line) {
         String condition = "";
         try {
@@ -124,6 +143,11 @@ public class Interpreter {
         }
     }
 
+    /**
+     * handles the if command
+     * @param cmd the cmd
+     * @param line the line the cmd is on
+     */
     private void ifCmd(String cmd, int line) {
         String condition = "";
         try {
@@ -133,23 +157,70 @@ public class Interpreter {
         }
     }
 
+    /**
+     * handles the endif command
+     * @param cmd the cmd
+     */
     private void endif(String cmd) {
-        //TODO talk about how it is a beginner programming language hence anythingcan be after this and it will work
     }
 
+    /**
+     * handles the endwhile comd
+     * @param cmd the cmd
+     */
     private void endwhile(String cmd) {
 
     }
 
-    private void squareOrRectangle(String cmd) {
-
+    /**
+     * draws the square or rectangle
+     * @param cmd the cmd
+     * @param line the line the cmd is on
+     * @param gc the graphics context
+     * @throws IncorrectNumberOfParametersException if an incorect number of parameters is provided
+     * @throws UnableToDrawShape if it is unable to draw the shape
+     */
+    private void squareOrRectangle(String cmd, int line, GraphicsContext gc) throws IncorrectNumberOfParametersException, UnableToDrawShape {
+        if (cmd.equals("square")) {
+            List<String> sizeList = syntaxCheck.getParams(cmd, 1, line);
+            Square square = new Square();
+            square.setOrigin(x, y);
+            square.render(gc, sizeList);
+        } else {
+            List<String> sizeList = syntaxCheck.getParams(cmd, 2, line);
+            Rectangle rectangle = new Rectangle();
+            rectangle.setOrigin(x, y);
+            rectangle.render(gc, sizeList);
+        }
     }
 
-    private void triangle(String cmd) {
-
+    /**
+     * draws the triangle
+     * @param cmd the cmd
+     * @param line the line the cmd is on
+     * @param gc the graphics context
+     * @throws IncorrectNumberOfParametersException if an incorect number of parameters is provided
+     * @throws UnableToDrawShape if it is unable to draw the shape
+     */
+    private void triangle(String cmd, int line, GraphicsContext gc) throws IncorrectNumberOfParametersException, UnableToDrawShape {
+        List<String> params = syntaxCheck.getParams(cmd, 2, line);
+        Triangle triangle = new Triangle();
+        triangle.setOrigin(x, y);
+        triangle.render(gc, params);
     }
 
-    private void circle(String cmd) {
-
+    /**
+     * draws the circle
+     * @param cmd the cmd
+     * @param line the line the cmd is on
+     * @param gc the graphics context
+     * @throws IncorrectNumberOfParametersException if an incorect number of parameters is provided
+     * @throws UnableToDrawShape if it is unable to draw the shape
+     */
+    private void circle(String cmd, int line, GraphicsContext gc) throws IncorrectNumberOfParametersException, UnableToDrawShape {
+        List<String> params = syntaxCheck.getParams(cmd, 1, line);
+        DrawCircle circle = new DrawCircle();
+        circle.setOrigin(x, y);
+        circle.render(gc, params);
     }
 }

@@ -1,11 +1,10 @@
 package com.se4.work.uni.factory;
 
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;
 
-public class Triangle implements Shape {
+public class DrawCircle implements Shape {
 
     double x;
     double y;
@@ -18,6 +17,6 @@ public class Triangle implements Shape {
 
     @Override
     public void render(GraphicsContext graphicsContext, List<String> params) {
-
+        graphicsContext.fillOval(x, y, Double.parseDouble(params.get(0)), Double.parseDouble(params.get(0)));
     }
 }

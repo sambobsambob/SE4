@@ -1,9 +1,7 @@
 package com.se4.work.uni.interpreter;
 
 
-import com.se4.work.uni.exception.InvalidSyntaxException;
-import com.se4.work.uni.exception.NoCodeException;
-import com.se4.work.uni.exception.UnknownCommandException;
+import com.se4.work.uni.exception.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -27,8 +25,8 @@ public class RunCode {
         try {
             Interpreter interpreter = new Interpreter();
             String[] cmds = interpreter.getCommands(code);
-            interpreter.runCommands(cmds, code);
-        } catch (NoCodeException | InvalidSyntaxException  e) {
+            interpreter.runCommands(cmds, code, graphicsContext);
+        } catch (NoCodeException | InvalidSyntaxException | UnableToDrawShape | IncorrectNumberOfParametersException e) {
             e.printStackTrace();
         }
     }
@@ -43,8 +41,8 @@ public class RunCode {
         try {
             Interpreter interpreter = new Interpreter();
             String[] cmds = interpreter.getCommands(code);
-            interpreter.runCommands(cmds, code);
-        } catch (NoCodeException | InvalidSyntaxException e) {
+            interpreter.runCommands(cmds, code, graphicsContext);
+        } catch (NoCodeException | InvalidSyntaxException | UnableToDrawShape | IncorrectNumberOfParametersException e) {
             e.printStackTrace();
         }
     }

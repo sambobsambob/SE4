@@ -6,7 +6,6 @@ import com.se4.work.uni.exception.InvalidSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Checks the syntax of the code or command entered by the user
@@ -14,7 +13,6 @@ import java.util.regex.Pattern;
  * @author samuel.canham
  */
 public class SyntaxCheck {
-    //TODO get moveto working, no idea why it does not
 
     /**
      *
@@ -41,13 +39,11 @@ public class SyntaxCheck {
      * @throws IncorrectNumberOfParametersException if the number of parameters provided does not match the number expected
      */
     public List<String> getParams(String cmd, int count, int line) throws IncorrectNumberOfParametersException {
-        System.out.println("cmd"+cmd);
         String[] cmdLineArray = cmd.split(" ");
         cmdLineArray = Arrays.copyOfRange(cmdLineArray, 1, cmdLineArray.length);
         List<String> params = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             try {
-                System.out.println(cmd + " " + count + " " );
                 params.add(cmdLineArray[i]);
             } catch (Exception e) {
                 throw new IncorrectNumberOfParametersException("Invalid number of parameters provided on line " + line);
